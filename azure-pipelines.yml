@@ -1,0 +1,89 @@
+trigger:
+  branches:
+    include:
+      - '*'
+  tags:
+    include:
+      - 'v*'
+
+pr:
+  branches:
+    include:
+      - '*'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    displayName: 'Build & test'
+    jobs:
+      - job: BuildAndTest
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '22.x'
+            displayName: 'Install Node.js'
+
+          - script: corepack enable
+            displayName: 'Enable corepack (pnpm)'
+
+          - script: pnpm install --frozen-lockfile
+            displayName: 'Install dependencies'
+
+          - script: pnpm lint
+            displayName: 'Lint'
+
+          - script: pnpm build
+            displayName: 'Type check & build library'
+
+          - script: pnpm exec playwright install --with-deps chromium
+            displayName: 'Install Playwright browser'
+
+          - script: pnpm test
+            displayName: 'Run tests'
+
+  # Only runs when the pipeline was triggered by a semver tag push (v1.2.3),
+  # not on ordinary branch or PR builds.
+  - stage: Publish
+    displayName: 'Publish to Azure Artifacts'
+    dependsOn: Build
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+    jobs:
+      - job: Publish
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '22.x'
+            displayName: 'Install Node.js'
+
+          - script: corepack enable
+            displayName: 'Enable corepack (pnpm)'
+
+          - script: pnpm install --frozen-lockfile
+            displayName: 'Install dependencies'
+
+          - script: pnpm build
+            displayName: 'Build library'
+
+          - script: |
+              TAG_NAME="${BUILD_SOURCEBRANCH#refs/tags/}"
+              TAG_VERSION="${TAG_NAME#v}"
+              PKG_VERSION=$(node -p "require('./package.json').version")
+              if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+                echo "##vso[task.logissue type=error]Tag $TAG_NAME does not match package.json version $PKG_VERSION. Bump package.json's version and re-tag before publishing."
+                exit 1
+              fi
+              echo "Tag $TAG_NAME matches package.json version $PKG_VERSION."
+            displayName: 'Verify tag matches package.json version'
+
+          - script: cp .npmrc.azure-artifacts.example .npmrc
+            displayName: 'Prepare Azure Artifacts .npmrc'
+
+          - task: npmAuthenticate@0
+            inputs:
+              workingFile: .npmrc
+            displayName: 'Authenticate to Azure Artifacts feed'
+
+          - script: pnpm publish --no-git-checks
+            displayName: 'Publish to Azure Artifacts'

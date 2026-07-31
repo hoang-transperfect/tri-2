@@ -1,0 +1,2 @@
+registry=https://pkgs.dev.azure.com/<ORG>/<PROJECT>/_packaging/<FEED>/npm/registry/
+always-auth=true
