@@ -1,32 +1,117 @@
-# React + TypeScript + Vite
+# @hoang-tpt/tri-2
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+[![npm version](https://img.shields.io/npm/v/@hoang-tpt/tri-2)](https://www.npmjs.com/package/@hoang-tpt/tri-2)
+[![CI](https://github.com/hoang-transperfect/tri-2/actions/workflows/ci.yml/badge.svg)](https://github.com/hoang-transperfect/tri-2/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/@hoang-tpt/tri-2)](./LICENSE)
 
-Currently, two official plugins are available:
+A React component library built with TypeScript and Vite.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Requirements
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Peer dependency | Version |
+| --- | --- |
+| `react` | `^19.0.0` |
+| `react-dom` | `^19.0.0` |
 
-## Expanding the Oxlint configuration
+## Installation
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+```bash
+npm install @hoang-tpt/tri-2
+# or
+pnpm add @hoang-tpt/tri-2
+# or
+yarn add @hoang-tpt/tri-2
+```
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+Import styles once at the root of your application:
+
+```ts
+import '@hoang-tpt/tri-2/style.css';
+```
+
+---
+
+## Usage
+
+### Button
+
+```tsx
+import { Button } from '@hoang-tpt/tri-2';
+
+export function App() {
+  return (
+    <Button
+      label="Click me"
+      primary
+      onClick={() => console.log('clicked')}
+    />
+  );
 }
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+#### Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `label` | `string` | — | Button text (**required**) |
+| `primary` | `boolean` | `false` | Use the primary (filled) style |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Controls padding and font size |
+| `backgroundColor` | `string` | — | Overrides the background color |
+| `onClick` | `() => void` | — | Click handler |
+
+---
+
+## Development
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) 22+
+- [pnpm](https://pnpm.io/) 10+ (`corepack enable`)
+
+### Setup
+
+```bash
+git clone https://github.com/hoang-transperfect/tri-2.git
+cd tri-2
+pnpm install
+pnpm exec playwright install chromium   # one-time browser binary download
+```
+
+### Commands
+
+| Command | Description |
+| --- | --- |
+| `pnpm storybook` | Start Storybook dev server on `localhost:6006` |
+| `pnpm build` | Type-check and build the library to `dist/` |
+| `pnpm test` | Run component tests (headless Chromium via Playwright) |
+| `pnpm lint` | Run oxlint |
+| `pnpm build-storybook` | Build static Storybook |
+
+### Adding a component
+
+1. Create `src/components/<Name>/`:
+   - `<Name>.tsx` — component + exported `Props` type
+   - `<Name>.css` — scoped styles
+   - `<Name>.stories.ts` — Storybook stories (used as component tests)
+   - `index.ts` — re-exports `<Name>` and `<Name>Props`
+2. Add `export * from './components/<Name>';` to `src/index.ts`.
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Code of Conduct
+
+See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
+
+## Security
+
+See [SECURITY.md](./SECURITY.md).
+
+## License
+
+[MIT](./LICENSE) © hoang.nguyen

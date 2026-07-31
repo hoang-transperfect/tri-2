@@ -1,12 +1,11 @@
-# Changelog
+# @hoang-tpt/tri-2
 
-All notable changes to this project will be documented in this file.
-
-## [0.0.1] - Unreleased
+## 0.0.1
 
 ### Added
 
-- Initial `Button` component (Storybook stories, tests via `@storybook/addon-vitest`).
-- Vite library build producing ESM output and generated type declarations.
-- CI (lint, build, test) and CD (publish on `vX.Y.Z` tag) pipelines for both
-  Azure DevOps and GitHub Actions.
+- `Button` component with `primary`, `size`, `backgroundColor`, `label`, and `onClick` props
+- Storybook stories used as component tests via `@storybook/addon-vitest`
+- Vite library build producing ESM output (`dist/index.js`) and type declarations (`dist/index.d.ts`)
+- CI pipeline (lint, build, test) for GitHub Actions and Azure DevOps
+- CD pipeline: automated publish to npm on merge of a Version Packages PR (via Changesets)
