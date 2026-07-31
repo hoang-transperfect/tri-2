@@ -27,7 +27,7 @@
     "build-storybook": "storybook build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepare": "node -e \"if (process.env.CI !== 'true') require('child_process').execSync('husky', {stdio:'inherit'})\""
+    "prepare": "husky"
   },
   "peerDependencies": {
     "react": "^19.2.7",
